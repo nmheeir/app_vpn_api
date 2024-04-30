@@ -2,10 +2,14 @@ package com.example.vpn.controller;
 
 import com.example.vpn.entities.User;
 import com.example.vpn.repositories.UserRepository;
+import com.example.vpn.responses.UserResponse;
+import com.example.vpn.services.UserService;
+import com.example.vpn.utils.JwtUtils;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,11 +18,60 @@ import java.util.List;
 public class UserController {
 
     @Autowired
+    private JwtUtils jwtUtils;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/all")
     public List<User> getAllUser() {
         return userRepository.findAll();
+    }
+
+    public ResponseEntity<Object> detail(String token) {
+        return null;
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<Object> fetchData(
+            @RequestHeader(value = "Authorization") String token
+     ) {
+        if (jwtUtils.isTokenValid(token)) {
+            String username = jwtUtils.extractUsername(token);
+
+            User user = userRepository.findUserByUsername(username);
+
+            return UserResponse.userResponseBuilder(true, "Successful", HttpStatus.OK, user);
+        }
+        return UserResponse.userResponseBuilder(false, "Successful", HttpStatus.NOT_FOUND, null);
+    }
+
+    @PostMapping("/changepw")
+    public ResponseEntity<Object> changePassword(
+            @RequestHeader(value = "Authorization") String token,
+            @RequestParam(name = "oldPassword") String oldPassword,
+            @RequestParam(name = "newPassword") String newPassword
+    ) {
+        if (jwtUtils.isTokenValid(token)) {
+            String username = jwtUtils.extractUsername(token);
+
+            User user = userRepository.findUserByUsername(username);
+
+            if (BCrypt.checkpw(oldPassword, user.getPassword())) {
+                user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+
+                userRepository.save(user);
+
+                return UserResponse.userResponseBuilder(true, "Successful", HttpStatus.OK, user);
+            }
+            else {
+                return UserResponse.userResponseBuilder(false, "Mật khẩu không khớp", HttpStatus.NOT_ACCEPTABLE, null);
+            }
+        }
+        return UserResponse.userResponseBuilder(true, "Can't update user", HttpStatus.NOT_ACCEPTABLE, null);
     }
 
 }

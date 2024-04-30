@@ -54,15 +54,18 @@ public class JwtUtils {
         return extractClaims(token, Claims::getSubject);
     }
 
+    public String extractUid(String token) {
+        return extractClaims(token, claims -> claims.get("id", String.class));
+    }
+
     //kiểm tra xem accessToken còn trong thời gian sử dụng không
     public boolean isTokenExpired(String token) {
         return extractClaims(token, Claims::getExpiration).before(new Date());
     }
 
     //kiểm tra xem accessToken còn hợp lệ hay không
-    public boolean isTokenValid(String token, User user) {
-        final String username = extractUsername(token);
-        return (username.equals(user.getUsername()) && !isTokenExpired(token));
+    public boolean isTokenValid(String token) {
+        return !isTokenExpired(token);
     }
 
 }
