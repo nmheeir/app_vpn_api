@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 
-public class UserResponse {
+public class DataResponse {
 
-    public static ResponseEntity<Object> userResponseBuilder(
+    public static ResponseEntity<Object> dataResponseBuilder(
             Boolean isSuccessful,
             String message,
             HttpStatus httpStatus,

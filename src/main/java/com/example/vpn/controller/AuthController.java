@@ -60,4 +60,13 @@ public class AuthController {
         }
         return TokenResponse.tokenResponseBuilder("Can't refresh token", null, null);
     }
+
+
+    @PostMapping("/verify")
+    public ResponseEntity<Object> verifyEmail(
+            @RequestParam(name = "email") String email,
+            @RequestParam(name = "code") String code
+    ) {
+        return authService.verifyEmail(email, code);
+    }
 }

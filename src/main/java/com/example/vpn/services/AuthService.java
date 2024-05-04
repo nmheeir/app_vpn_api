@@ -12,4 +12,6 @@ public interface AuthService {
     ResponseEntity<Object> register(String username, String password, String email, String role);
 
     ResponseEntity<Object> refreshToken(String accessToken);
+
+    ResponseEntity<Object> verifyEmail(String email, String verifyCode);
 }

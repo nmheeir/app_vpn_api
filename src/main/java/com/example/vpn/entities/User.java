@@ -25,6 +25,9 @@ public class User {
     @Column(name = "role")
     private String role;
 
+    @Column(name = "verify_at")
+    private String verify_at;
+
     public User(String username, String email, String password, String role) {
         this.username = username;
         this.email = email;

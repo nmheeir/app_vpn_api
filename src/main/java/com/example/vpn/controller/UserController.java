@@ -2,7 +2,8 @@ package com.example.vpn.controller;
 
 import com.example.vpn.entities.User;
 import com.example.vpn.repositories.UserRepository;
-import com.example.vpn.responses.UserResponse;
+import com.example.vpn.responses.OtherResponse;
+import com.example.vpn.responses.DataResponse;
 import com.example.vpn.services.UserService;
 import com.example.vpn.utils.JwtUtils;
 import org.mindrot.jbcrypt.BCrypt;
@@ -44,9 +45,9 @@ public class UserController {
 
             User user = userRepository.findUserByUsername(username);
 
-            return UserResponse.userResponseBuilder(true, "Successful", HttpStatus.OK, user);
+            return DataResponse.dataResponseBuilder(true, "Successful", HttpStatus.OK, user);
         }
-        return UserResponse.userResponseBuilder(false, "Successful", HttpStatus.NOT_FOUND, null);
+        return OtherResponse.errorResponseBuilder(HttpStatus.NOT_FOUND, "Can't found user");
     }
 
     @PostMapping("/changepw")
@@ -57,7 +58,6 @@ public class UserController {
     ) {
         if (jwtUtils.isTokenValid(token)) {
             String username = jwtUtils.extractUsername(token);
-
             User user = userRepository.findUserByUsername(username);
 
             if (BCrypt.checkpw(oldPassword, user.getPassword())) {
@@ -65,13 +65,20 @@ public class UserController {
 
                 userRepository.save(user);
 
-                return UserResponse.userResponseBuilder(true, "Successful", HttpStatus.OK, user);
+                return DataResponse.dataResponseBuilder(true, "Successful", HttpStatus.OK, user);
             }
             else {
-                return UserResponse.userResponseBuilder(false, "Mật khẩu không khớp", HttpStatus.NOT_ACCEPTABLE, null);
+                return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "Password incorrect");
             }
         }
-        return UserResponse.userResponseBuilder(true, "Can't update user", HttpStatus.NOT_ACCEPTABLE, null);
+        return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "Can't update user");
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> deleteOwn(
+            @RequestHeader(value = "Authorization") String token
+    ) {
+        return userService.deleteOwner(token);
     }
 
 }

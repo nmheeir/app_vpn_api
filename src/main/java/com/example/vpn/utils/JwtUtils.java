@@ -54,8 +54,8 @@ public class JwtUtils {
         return extractClaims(token, Claims::getSubject);
     }
 
-    public String extractUid(String token) {
-        return extractClaims(token, claims -> claims.get("id", String.class));
+    public Integer extractUid(String token) {
+        return extractClaims(token, claims -> claims.get("id", Integer.class));
     }
 
     //kiểm tra xem accessToken còn trong thời gian sử dụng không
