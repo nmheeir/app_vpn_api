@@ -1,6 +1,5 @@
 package com.example.vpn.controller;
 
-import com.example.vpn.entities.Country;
 import com.example.vpn.services.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

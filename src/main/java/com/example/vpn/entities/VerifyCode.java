@@ -3,8 +3,6 @@ package com.example.vpn.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
-
 @Entity
 @Table(name = "verify_code")
 @Data

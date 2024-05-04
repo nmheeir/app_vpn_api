@@ -1,9 +1,6 @@
 package com.example.vpn.services;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.net.ResponseCache;
 
 public interface AuthService {
 
