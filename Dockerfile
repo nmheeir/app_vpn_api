@@ -1,8 +1,11 @@
-FROM maven:3.8.5-openjdk-17 AS build
-COPY . .
-RUN mvn clean package -DskipTests
+# Stage 1: Build the application
+FROM gradle:jdk11 AS build
+COPY . /app
+WORKDIR /app
+RUN gradle build --no-daemon
 
-FROM openjdk:17.0.1-jdk-slim
-COPY --from=build /target/demo-1.jar demo.jar
+# Stage 2: Create the final image
+FROM openjdk:11-jre-slim
+COPY --from=build /app/build/libs/demo-1.jar /demo.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","demo.jar"]
+ENTRYPOINT ["java", "-jar", "/demo.jar"]
