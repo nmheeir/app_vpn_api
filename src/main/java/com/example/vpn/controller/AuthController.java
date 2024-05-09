@@ -69,4 +69,12 @@ public class AuthController {
     ) {
         return authService.verifyEmail(email, code);
     }
+
+    @PostMapping("/isValidUsernameEmail")
+    public ResponseEntity<Object> checkUsernameEmail(
+            @RequestParam(name = "username") String username,
+            @RequestParam(name = "email") String email
+    ) {
+        return authService.checkUsernameEmail(username, email);
+    }
 }

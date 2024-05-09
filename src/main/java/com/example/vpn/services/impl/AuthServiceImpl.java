@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.print.attribute.standard.MediaSize;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -42,24 +43,13 @@ public class AuthServiceImpl implements AuthService {
                 String refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
                 return AuthResponse.authResponseBuilder(true, HttpStatus.OK, "Login successful", accessToken, refreshToken);
             }
-            return OtherResponse.errorResponseBuilder(HttpStatus.NOT_FOUND, "Wrong password");
+            return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Wrong password");
         }
-        return OtherResponse.errorResponseBuilder(HttpStatus.NOT_FOUND, "Can't found user");
+        return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Can't found user");
     }
 
     @Override
     public ResponseEntity<Object> register(String username, String email, String password, String role) {
-
-        User user_username = userRepository.findUserByUsername(username);
-        if (user_username != null) {
-            return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "User is already exist");
-        }
-
-        User user_email = userRepository.findUserByEmail(email);
-        if (user_email != null) {
-            return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "Email is already exist");
-        }
-
         try {
             String passwordEncode = BCrypt.hashpw(password, BCrypt.gensalt());
             User user = new User(username, email, passwordEncode, role);
@@ -67,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
             return AuthResponse.registerResponseBuilder(true, HttpStatus.OK, "Register Ok", savedUser);
         } catch (DataIntegrityViolationException e) {
             // Xử lý lỗi khi thêm dữ liệu đã tồn tại vào cơ sở dữ liệu
-            return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "User is already exist");
+            return OtherResponse.errorResponseBuilder(HttpStatus.OK, "User is already exist");
         }
     }
 
@@ -86,7 +76,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<Object> verifyEmail(String email, String verifyCode) {
 
-
         VerifyCode isExist = verifyCodeRepository.check(email, verifyCode);
 
         if (isExist != null) {
@@ -97,12 +86,26 @@ public class AuthServiceImpl implements AuthService {
             LocalDateTime time_now = LocalDateTime.now();
 
             if (time_now.isAfter(expire_time)) {
-                return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "Quá thời gian nhập code");
+                return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Quá thời gian nhập code");
             }
             verifyCodeRepository.delete(isExist);
             return OtherResponse.successResponseBuilder(HttpStatus.OK, "Xác thực thành công");
         }
-        return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "Nhập code sai");
+        return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Nhập code sai");
+    }
+
+    @Override
+    public ResponseEntity<Object> checkUsernameEmail(String username, String email) {
+        User user_username = userRepository.findUserByUsername(username);
+        if (user_username != null) {
+            return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Username is already exist");
+        }
+
+        User user_email = userRepository.findUserByEmail(email);
+        if (user_email != null) {
+            return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Email is already exist");
+        }
+        return OtherResponse.successResponseBuilder(HttpStatus.OK, "Valid");
     }
 
 

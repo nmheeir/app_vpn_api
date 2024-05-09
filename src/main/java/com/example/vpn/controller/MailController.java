@@ -39,7 +39,7 @@ public class MailController {
         String verifyCode = Integer.toString(randomNumber);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, 10);
+        calendar.add(Calendar.MINUTE, 1);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = dateFormat.format(calendar.getTime());
@@ -48,5 +48,14 @@ public class MailController {
         mailRepository.save(new VerifyCode(verifyCode, formattedDate, email));
 
         return mailService.sendVerifyCode(email, verifyCode);
+    }
+
+    @PostMapping("/resendCode")
+    public ResponseEntity<Object> resendCode(
+            @RequestParam(name = "email") String email
+    ) {
+        mailRepository.deleteByEmail(email);
+
+        return sendVerifyCode(email);
     }
 }
