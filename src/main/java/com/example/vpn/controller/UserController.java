@@ -2,8 +2,8 @@ package com.example.vpn.controller;
 
 import com.example.vpn.entities.User;
 import com.example.vpn.repositories.UserRepository;
-import com.example.vpn.responses.OtherResponse;
 import com.example.vpn.responses.DataResponse;
+import com.example.vpn.responses.OtherResponse;
 import com.example.vpn.services.UserService;
 import com.example.vpn.utils.JwtUtils;
 import org.mindrot.jbcrypt.BCrypt;
@@ -79,6 +79,13 @@ public class UserController {
             @RequestHeader(value = "Authorization") String token
     ) {
         return userService.deleteOwner(token);
+    }
+
+    @PostMapping("/premiumType")
+    public ResponseEntity<Object> premiumType(
+            @RequestParam(name = "premiumKey") String key
+    ) {
+        return DataResponse.dataResponseBuilder(true, "Ok", HttpStatus.OK, jwtUtils.extractPremiumType(key));
     }
 
 }

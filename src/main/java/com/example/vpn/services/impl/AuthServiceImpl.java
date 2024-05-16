@@ -5,6 +5,7 @@ import com.example.vpn.entities.VerifyCode;
 import com.example.vpn.repositories.UserRepository;
 import com.example.vpn.repositories.VerifyCodeRepository;
 import com.example.vpn.responses.AuthResponse;
+import com.example.vpn.responses.DataResponse;
 import com.example.vpn.responses.OtherResponse;
 import com.example.vpn.services.AuthService;
 import com.example.vpn.utils.JwtUtils;
@@ -16,9 +17,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.print.attribute.standard.MediaSize;
+import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -39,9 +42,11 @@ public class AuthServiceImpl implements AuthService {
 
         if (user != null) {
             if (BCrypt.checkpw(password, user.getPassword())) {
-                String accessToken = jwtUtils.generateAccessToken(user);
-                String refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
-                return AuthResponse.authResponseBuilder(true, HttpStatus.OK, "Login successful", accessToken, refreshToken);
+                Map<String, Object> map = new HashMap<>();
+                map.put("accessToken", jwtUtils.generateAccessToken(user));
+                map.put("refreshToken", jwtUtils.generateRefreshToken(new HashMap<>(), user));
+                map.put("premiumKey", user.getPremiumKey());
+                return DataResponse.dataResponseBuilder(true, "Login Success", HttpStatus.OK, map);
             }
             return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Wrong password");
         }
@@ -52,9 +57,9 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<Object> register(String username, String email, String password, String role) {
         try {
             String passwordEncode = BCrypt.hashpw(password, BCrypt.gensalt());
-            User user = new User(username, email, passwordEncode, role);
+            User user = new User(username, email, passwordEncode, role, jwtUtils.generateFreeKey(username));
             User savedUser = userRepository.save(user);
-            return AuthResponse.registerResponseBuilder(true, HttpStatus.OK, "Register Ok", savedUser);
+            return DataResponse.dataResponseBuilder(true, "Register Success", HttpStatus.OK, savedUser);
         } catch (DataIntegrityViolationException e) {
             // Xử lý lỗi khi thêm dữ liệu đã tồn tại vào cơ sở dữ liệu
             return OtherResponse.errorResponseBuilder(HttpStatus.OK, "User is already exist");
@@ -64,12 +69,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<Object> refreshToken(String accessToken) {
         String username = jwtUtils.extractUsername(accessToken);
-
         User user = userRepository.findUserByUsername(username);
-
-
         String refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
-
         return null;
     }
 

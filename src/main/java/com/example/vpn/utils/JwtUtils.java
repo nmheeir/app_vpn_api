@@ -46,6 +46,40 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String generateFreeKey(String username) {
+        return Jwts.builder()
+                .claim("premium_type", "F")
+                .subject(username)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String generatePremiumKey(String username, Integer expire_time) {
+        String premium_type = "";
+        if (expire_time.equals(Constants.ONE_MONTH)) {
+            premium_type = "A";
+        }
+        else if (expire_time.equals(Constants.SIX_MONTH)) {
+            premium_type = "B";
+        }
+        else if (expire_time.equals(Constants.ONE_YEAR)) {
+            premium_type = "C";
+        } else if (expire_time.equals(Constants.TWO_YEAR)) {
+            premium_type = "D";
+        }
+        else {
+            premium_type = "F";
+        }
+        return Jwts.builder()
+                .subject(username)
+                .claim("premium_type", premium_type)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME * expire_time))
+                .signWith(secretKey)
+                .compact();
+    }
+
     private <T> T extractClaims(String token, Function<Claims, T> claimsTFunction) {
         return claimsTFunction.apply(Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload());
     }
@@ -56,6 +90,10 @@ public class JwtUtils {
 
     public Integer extractUid(String token) {
         return extractClaims(token, claims -> claims.get("id", Integer.class));
+    }
+
+    public String extractPremiumType(String token) {
+        return extractClaims(token, claims -> claims.get("premium_type", String.class));
     }
 
     //kiểm tra xem accessToken còn trong thời gian sử dụng không

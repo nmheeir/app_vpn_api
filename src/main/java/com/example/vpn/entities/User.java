@@ -27,11 +27,15 @@ public class User {
     @Column(name = "verify_at")
     private String verify_at;
 
-    public User(String username, String email, String password, String role) {
+    @Column(name = "premium_key")
+    private String premiumKey;
+
+    public User(String username, String email, String password, String role, String premiumKey) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.premiumKey = premiumKey;
     }
 
     public User() {

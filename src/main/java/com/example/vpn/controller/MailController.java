@@ -3,7 +3,9 @@ package com.example.vpn.controller;
 import com.example.vpn.entities.VerifyCode;
 import com.example.vpn.repositories.VerifyCodeRepository;
 import com.example.vpn.services.MailService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,12 @@ public class MailController {
             @RequestParam(name = "subject") String subject,
             @RequestParam(name = "message") String message
     ) {
-        return mailService.sendMail(email, subject, message);
+        try {
+            mailService.sendMail(email, subject, message);
+            return ResponseEntity.ok("Email sent successfully");
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error sending email: " + e.getMessage());
+        }
     }
 
     @PostMapping("/sendVerifyCode")
