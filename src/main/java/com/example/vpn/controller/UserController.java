@@ -62,13 +62,12 @@ public class UserController {
 
             if (BCrypt.checkpw(oldPassword, user.getPassword())) {
                 user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
-
                 userRepository.save(user);
 
-                return DataResponse.dataResponseBuilder(true, "Successful", HttpStatus.OK, user);
+                return DataResponse.dataResponseBuilder(true, "Successful change password", HttpStatus.OK, user);
             }
             else {
-                return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "Password incorrect");
+                return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Incorrect password");
             }
         }
         return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "Can't update user");

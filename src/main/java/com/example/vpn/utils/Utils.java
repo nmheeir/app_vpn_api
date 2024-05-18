@@ -1,5 +1,8 @@
 package com.example.vpn.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Utils {
     public static String verifyCodeForm(String verifyCode) {
         return "<!DOCTYPE html>\n" +
@@ -15,5 +18,11 @@ public class Utils {
                 "  <p>Ba chàng hiệp sĩ mộng mơ.<br>\n" +
                 "</body>\n" +
                 "</html>\n";
+    }
+
+    public static String getCurrentTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date currentTime = new Date();
+        return dateFormat.format(currentTime);
     }
 }

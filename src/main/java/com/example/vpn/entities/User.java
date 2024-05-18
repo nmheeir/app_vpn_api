@@ -25,7 +25,7 @@ public class User {
     private String role;
 
     @Column(name = "verify_at")
-    private String verify_at;
+    private String verifyAt;
 
     @Column(name = "premium_key")
     private String premiumKey;

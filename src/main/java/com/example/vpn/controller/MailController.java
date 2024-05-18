@@ -7,7 +7,10 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,7 +49,7 @@ public class MailController {
         String verifyCode = Integer.toString(randomNumber);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, 1);
+        calendar.add(Calendar.MINUTE, 15);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate = dateFormat.format(calendar.getTime());

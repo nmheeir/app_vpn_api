@@ -4,11 +4,11 @@ import com.example.vpn.entities.User;
 import com.example.vpn.entities.VerifyCode;
 import com.example.vpn.repositories.UserRepository;
 import com.example.vpn.repositories.VerifyCodeRepository;
-import com.example.vpn.responses.AuthResponse;
 import com.example.vpn.responses.DataResponse;
 import com.example.vpn.responses.OtherResponse;
 import com.example.vpn.services.AuthService;
 import com.example.vpn.utils.JwtUtils;
+import com.example.vpn.utils.Utils;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -16,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.print.attribute.standard.MediaSize;
-import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -50,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
             }
             return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Wrong password");
         }
-        return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Can't found user");
+        return OtherResponse.errorResponseBuilder(HttpStatus.OK, "User doesn't exist");
     }
 
     @Override
@@ -58,6 +56,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             String passwordEncode = BCrypt.hashpw(password, BCrypt.gensalt());
             User user = new User(username, email, passwordEncode, role, jwtUtils.generateFreeKey(username));
+            user.setVerifyAt(Utils.getCurrentTime());
             User savedUser = userRepository.save(user);
             return DataResponse.dataResponseBuilder(true, "Register Success", HttpStatus.OK, savedUser);
         } catch (DataIntegrityViolationException e) {

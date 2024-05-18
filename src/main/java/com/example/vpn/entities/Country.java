@@ -18,6 +18,9 @@ public class Country {
     @Column(name = "flag")
     private String flag;
 
+    @Column(name = "config")
+    private String config;
+
     public Country() {
 
     }
