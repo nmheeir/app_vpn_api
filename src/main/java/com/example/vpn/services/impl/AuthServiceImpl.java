@@ -108,5 +108,12 @@ public class AuthServiceImpl implements AuthService {
         return OtherResponse.successResponseBuilder(HttpStatus.OK, "Valid");
     }
 
-
+    @Override
+    public ResponseEntity<Object> checkEmail(String email) {
+        User user_email = userRepository.findUserByEmail(email);
+        if (user_email == null) {
+            return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Email does not exist");
+        }
+        return OtherResponse.successResponseBuilder(HttpStatus.OK, "Valid");
+    }
 }

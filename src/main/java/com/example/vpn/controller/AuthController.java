@@ -7,7 +7,10 @@ import com.example.vpn.services.AuthService;
 import com.example.vpn.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
@@ -70,11 +73,18 @@ public class AuthController {
         return authService.verifyEmail(email, code);
     }
 
-    @PostMapping("/isValidUsernameEmail")
+    @PostMapping("/isUsernameEmailExist")
     public ResponseEntity<Object> checkUsernameEmail(
             @RequestParam(name = "username") String username,
             @RequestParam(name = "email") String email
     ) {
         return authService.checkUsernameEmail(username, email);
+    }
+
+    @PostMapping("/isEmailExist")
+    public ResponseEntity<Object> checkEmail(
+            @RequestParam(name = "email") String email
+    ) {
+        return authService.checkEmail(email);
     }
 }

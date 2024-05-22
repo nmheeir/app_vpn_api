@@ -13,4 +13,6 @@ public interface AuthService {
     ResponseEntity<Object> verifyEmail(String email, String verifyCode);
 
     ResponseEntity<Object> checkUsernameEmail(String username, String email);
+
+    ResponseEntity<Object> checkEmail(String email);
 }
