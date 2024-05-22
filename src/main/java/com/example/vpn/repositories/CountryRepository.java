@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 @EnableJpaRepositories
 public interface CountryRepository extends JpaRepository<Country, Integer> {
-    void deleteCountryById();
 }
