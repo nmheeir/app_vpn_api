@@ -13,4 +13,6 @@ public interface UserService {
 
     ResponseEntity<Object> deleteOwner(String token);
 
+    ResponseEntity<Object> resetPassword(String email, String password);
+
 }

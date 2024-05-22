@@ -1,6 +1,5 @@
 package com.example.vpn.controller;
 
-import com.example.vpn.entities.VerifyCode;
 import com.example.vpn.repositories.VerifyCodeRepository;
 import com.example.vpn.services.MailService;
 import jakarta.mail.MessagingException;
@@ -11,10 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Random;
 
 @RestController
 @RequestMapping("/mail")
@@ -43,21 +38,7 @@ public class MailController {
     public ResponseEntity<Object> sendVerifyCode(
             @RequestParam(name = "email") String email
     ) {
-        Random rand = new Random();
-        int randomNumber = (rand.nextInt(900000) + 100000);
-
-        String verifyCode = Integer.toString(randomNumber);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, 15);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String formattedDate = dateFormat.format(calendar.getTime());
-
-
-        mailRepository.save(new VerifyCode(verifyCode, formattedDate, email));
-
-        return mailService.sendVerifyCode(email, verifyCode);
+        return mailService.sendVerifyCode(email);
     }
 
     @PostMapping("/resendCode")
@@ -65,7 +46,6 @@ public class MailController {
             @RequestParam(name = "email") String email
     ) {
         mailRepository.deleteByEmail(email);
-
         return sendVerifyCode(email);
     }
 }

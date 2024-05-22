@@ -86,12 +86,12 @@ public class AuthServiceImpl implements AuthService {
             LocalDateTime time_now = LocalDateTime.now();
 
             if (time_now.isAfter(expire_time)) {
-                return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Quá thời gian nhập code");
+                return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Verification code has expired");
             }
             verifyCodeRepository.delete(isExist);
-            return OtherResponse.successResponseBuilder(HttpStatus.OK, "Xác thực thành công");
+            return OtherResponse.successResponseBuilder(HttpStatus.OK, "Verification successful");
         }
-        return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Nhập code sai");
+        return OtherResponse.errorResponseBuilder(HttpStatus.OK, "Invalid verification code");
     }
 
     @Override

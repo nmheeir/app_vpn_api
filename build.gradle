@@ -43,6 +43,9 @@ dependencies {
 
 	//java mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//connect azure database
+	implementation 'com.microsoft.sqlserver:mssql-jdbc:12.6.1.jre8'
 }
 
 tasks.named('test') {

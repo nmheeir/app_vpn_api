@@ -73,6 +73,14 @@ public class UserController {
         return OtherResponse.errorResponseBuilder(HttpStatus.CONFLICT, "Can't update user");
     }
 
+    @PutMapping("/resetPassword")
+    public ResponseEntity<Object> resetPassword(
+            @RequestParam(name = "email") String email,
+            @RequestParam(name = "password") String password
+    ) {
+        return userService.resetPassword(email, password);
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteOwn(
             @RequestHeader(value = "Authorization") String token

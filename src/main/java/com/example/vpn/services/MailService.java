@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface MailService {
 
-    public ResponseEntity<Object> sendMail(String email, String subject, String message) throws MessagingException;
+    ResponseEntity<Object> sendMail(String email, String subject, String message) throws MessagingException;
 
-    public ResponseEntity<Object> sendVerifyCode(String email, String code);
+    ResponseEntity<Object> sendVerifyCode(String email);
 }
