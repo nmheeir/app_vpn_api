@@ -64,4 +64,4 @@ jobs:
         with:
           app-name: 'apexvpn'
           slot-name: 'Production'
-          package: '${{ github.workspace }}/build/libs/gradle-wrapper.jar'
+          package: '${{ github.workspace }}/build/libs/app_vpn_api-1-plain.jar'
