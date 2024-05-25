@@ -24,6 +24,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: List files in build/libs
+        run: ls -l build/libs
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
@@ -45,6 +48,9 @@ jobs:
         with:
           name: java-app
 
+      - name: List downloaded files
+        run: ls -l ${{ github.workspace }}/
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -58,4 +64,4 @@ jobs:
         with:
           app-name: 'apexvpn'
           slot-name: 'Production'
-          package: '*.jar'
+          package: '${{ github.workspace }}/build/libs/app_vpn_api-1.jar'
