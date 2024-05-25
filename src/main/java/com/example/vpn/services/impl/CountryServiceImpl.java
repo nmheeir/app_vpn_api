@@ -59,4 +59,15 @@ public class CountryServiceImpl implements CountryService {
             return OtherResponse.errorResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while trying to add the country");
         }
     }
+
+    @Override
+    public ResponseEntity<Object> getPremiumCountry(Boolean isPremium) {
+        try {
+            List<Country> lCountry = countryRepository.getCountryByPremium(isPremium);
+
+            return DataResponse.dataResponseBuilder(true, "Query Successful", HttpStatus.OK, lCountry);
+        } catch (DataAccessException e) {
+            return OtherResponse.errorResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR, "An error when occurred when fetch data");
+        }
+    }
 }

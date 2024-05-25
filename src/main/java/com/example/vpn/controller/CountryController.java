@@ -38,4 +38,11 @@ public class CountryController {
     ) {
         return countryService.addCountry(country);
     }
+
+    @GetMapping("/preCountry")
+    public ResponseEntity<Object> getPremiumCountry(
+            @RequestParam(name = "isPremium") Boolean isPremium
+    ) {
+        return countryService.getPremiumCountry(isPremium);
+    }
 }

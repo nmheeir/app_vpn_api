@@ -21,6 +21,15 @@ public class Country {
     @Column(name = "config")
     private String config;
 
+    @Column(name = "premium")
+    private Boolean premium;
+
+    @Column(name = "vpn_name")
+    private String vpnName;
+
+    @Column(name = "vpn_password")
+    private String vpnPassword;
+
     public Country() {
 
     }

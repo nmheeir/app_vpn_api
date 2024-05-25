@@ -10,4 +10,6 @@ public interface CountryService {
     ResponseEntity<Object> deleteCountryById(Integer id);
 
     ResponseEntity<Object> addCountry(Country country);
+
+    ResponseEntity<Object> getPremiumCountry(Boolean isPremium);
 }
