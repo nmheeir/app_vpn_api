@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy WAR app to Azure Web App - apexvpn
 
 on:
@@ -8,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -18,36 +21,36 @@ jobs:
         with:
           java-version: '17'
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Build with Maven
+        run: mvn clean install
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/build/libs/*.jar'
+          path: '${{ github.workspace }}/target/*.war'
 
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write # This is required for requesting the JWT
+      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: java-app
-
+      
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0ED9FBE6814647CE839D71556B14F531 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_82C07A351B444245BB9D3E362AE29CB4 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_75476683ECA0484D9DFF5B16304654BE }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E61649E43B8C4E03BFAAA938AC7CFF7C }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_435A503EC0A5440DB8F2217BED6015B3 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4E0F472A35614A93A3370FD41223FA30 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -55,4 +58,5 @@ jobs:
         with:
           app-name: 'apexvpn'
           slot-name: 'Production'
-          package: '*.jar'
+          package: '*.war'
+          
