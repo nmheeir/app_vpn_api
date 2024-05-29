@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id "com.microsoft.azure.azurewebapp" version "1.1.0"
 }
 
 group = 'com.example'
@@ -19,6 +20,19 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+azurewebapp {
+	subscription = '682e226a-f364-403a-9ace-a41ca6d1e199'
+	resourceGroup = 'vpnDatabase'
+	appName = 'apexvpnapi'
+	pricingTier = 'F1'
+	region = 'eastus'
+	runtime {
+		os = 'Windows'
+		webContainer = 'JAVA'
+		javaVersion = 'Java 17'
+	}
 }
 
 dependencies {
